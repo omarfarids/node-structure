@@ -7,9 +7,14 @@ var logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const multer = require("multer");
 
 // ------------- internal exports ------------
 var indexRouter = require("./routes/index");
+var authRouter = require("./routes/auth");
+var authenticateToken = require("./middlewares/authenticateToken");
+var { fileStorage, fileFilter } = require("./utils/functions");
 
 // ------------- app ------------
 const port = process.env.PORT || 8000;
@@ -29,9 +34,6 @@ mongoose
     console.log(err);
   });
 
-// ----------- routes -----------
-app.use("/", indexRouter);
-
 // --------- middlewares ----------
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -39,6 +41,16 @@ app.use(logger("dev"));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
+
+// ----------- routes -----------
+app.use("/auth", authRouter);
+
+app.use(authenticateToken); //is user authenticated
+app.use("/", indexRouter);
 
 // ------- catch 404 and forward to error handler ------
 app.use(function (req, res, next) {
