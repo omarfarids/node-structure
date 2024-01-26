@@ -1,7 +1,6 @@
-const User = require("../models/user");
+const User = require("../models/user.schema");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../utils/functions");
-const { sign } = require("jsonwebtoken");
 
 // -------------------- login --------------------
 exports.login = async (req, res) => {
@@ -45,8 +44,6 @@ exports.login = async (req, res) => {
 exports.signup = async (req, res) => {
   const { email, username, password, confirmPassword } = req.body;
   const image = req.file;
-
-  console.log(image);
 
   // Checking if the passwords match
   if (password !== confirmPassword) {
