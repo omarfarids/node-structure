@@ -97,6 +97,47 @@ exports.editUser = async (req, res) => {
   }
 };
 
+// Edit user password ---------------------
+exports.editUserPassword = async (req, res) => {
+  const { id, password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({
+      status: 400,
+      message: "Passwords do not match",
+    });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      {
+        password: hashedPassword,
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      message: "Internal server error",
+    });
+  }
+};
+
 // DELETE delete user ---------------------
 exports.deleteUser = async (req, res) => {
   const id = req.params.id;

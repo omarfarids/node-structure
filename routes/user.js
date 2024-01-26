@@ -8,8 +8,11 @@ router.get("/", userController.getAllUsers);
 /* GET a user. */
 router.get("/:id", userController.getUser);
 
-/* POST edit user. */
+/* PUT edit user. */
 router.put("/:id", userController.editUser);
+
+/* PUT edit user. */
+router.put("/:id/update-password", userController.editUserPassword);
 
 /* DELETE delete user. */
 router.delete("/:id", userController.deleteUser);
