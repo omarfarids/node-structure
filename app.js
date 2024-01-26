@@ -9,6 +9,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const multer = require("multer");
+var cors = require("cors");
 
 // ------------- internal exports ------------
 var indexRouter = require("./routes/index");
@@ -37,6 +38,7 @@ mongoose
 
 // --------- middlewares ----------
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
 app.use(cookieParser());
