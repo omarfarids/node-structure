@@ -9,7 +9,6 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const multer = require("multer");
-var cors = require("cors");
 
 // ------------- internal exports ------------
 var indexRouter = require("./routes/index");
@@ -42,12 +41,11 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
+app.use(express.static(path.join(__dirname, "public")));
 
 // ----------- routes -----------
 app.use("/auth", authRouter);

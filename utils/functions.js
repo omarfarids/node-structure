@@ -14,7 +14,7 @@ const generateToken = (userId) => {
 // ----------- file storage ------------
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/images");
+    cb(null, "public");
   },
   filename: (req, file, cb) => {
     cb(null, new Date().toISOString() + "-" + file.originalname);

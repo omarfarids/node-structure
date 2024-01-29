@@ -70,7 +70,7 @@ exports.signup = async (req, res) => {
       email,
       username,
       password: hashedPassword,
-      image: image ? process.env.BASE_URL + "images/" + image.filename : "",
+      image: image ? process.env.BASE_URL + image.filename : "",
     });
 
     // Saving the user

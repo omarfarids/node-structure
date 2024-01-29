@@ -60,7 +60,7 @@ exports.editUser = async (req, res) => {
         {
           username,
           email,
-          image: process.env.BASE_URL + "images/" + image.filename,
+          image: process.env.BASE_URL + image.filename,
         },
         { new: true }
       );
