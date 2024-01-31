@@ -14,6 +14,7 @@ const multer = require("multer");
 var authRouter = require("./routes/auth");
 var userRouter = require("./routes/user");
 var categoryRouter = require("./routes/category");
+var productRouter = require("./routes/product");
 var authenticateToken = require("./middlewares/authenticateToken");
 var { fileStorage, fileFilter } = require("./utils/functions");
 
@@ -53,6 +54,7 @@ app.use("/auth", authRouter);
 app.use(authenticateToken); //is user authenticated
 app.use("/user", userRouter);
 app.use("/category", categoryRouter);
+app.use("/product", productRouter);
 
 // ------- catch 404 and forward to error handler ------
 app.use(function (req, res, next) {
