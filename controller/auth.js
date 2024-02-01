@@ -70,6 +70,8 @@ exports.signup = async (req, res) => {
       email,
       username,
       password: hashedPassword,
+      createdAt: new Date().toISOString(),
+      updatedAt: null,
       image: image ? process.env.BASE_URL + image.filename : "",
     });
 

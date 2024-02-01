@@ -3,7 +3,12 @@ const User = require("../models/user.schema");
 // Get all users ---------------------
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("username email _id image");
+    const { page = 1, pagination = 10 } = req.query;
+
+    const users = await User.find()
+      .select("username email _id image createdAt updatedAt")
+      .skip((page - 1) * pagination)
+      .limit(pagination);
     return res.status(200).json({
       status: 200,
       message: "Users found successfully",
@@ -37,6 +42,8 @@ exports.getUser = async (req, res) => {
         username: user.username,
         email: user.email,
         image: user.image,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
     });
   } catch (error) {
@@ -61,13 +68,14 @@ exports.editUser = async (req, res) => {
           username,
           email,
           image: process.env.BASE_URL + image.filename,
+          updatedAt: new Date().toISOString(),
         },
         { new: true }
       );
     } else {
       user = await User.findOneAndUpdate(
         { _id: id },
-        { username, email },
+        { username, email, updatedAt: new Date().toISOString() },
         { new: true }
       );
     }

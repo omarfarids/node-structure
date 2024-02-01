@@ -4,9 +4,16 @@ const Category = require("../models/category.schema");
 // GET user categories ------------------------
 exports.getUserCategory = async (req, res) => {
   const { userId } = req.params;
+  const { page = 1, pagination = 10 } = req.query;
 
   try {
-    const user = await User.findById(userId).populate("categories");
+    const user = await User.findById(userId).populate({
+      path: "categories",
+      options: {
+        skip: (page - 1) * pagination,
+        limit: parseInt(pagination),
+      },
+    });
     if (!user) {
       return res.status(404).json({
         status: 404,
@@ -71,6 +78,8 @@ exports.createUserCategory = async (req, res) => {
       name,
       description,
       image: image ? process.env.BASE_URL + image.filename : "",
+      createdAt: new Date().toISOString(),
+      updatedAt: null,
     });
 
     // Save the category
@@ -105,13 +114,14 @@ exports.updateUserCategory = async (req, res) => {
           name,
           description,
           image: process.env.BASE_URL + image.filename,
+          updatedAt: new Date().toISOString(),
         },
         { new: true }
       );
     } else {
       category = await Category.findOneAndUpdate(
         { _id: categoryId },
-        { name, description },
+        { name, description, updatedAt: new Date().toISOString() },
         { new: true }
       );
     }

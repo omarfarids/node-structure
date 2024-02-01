@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  createdAt: {
+    type: Date,
+  },
+  updatedAt: {
+    type: Date || null,
+  },
   image: {
     type: String,
     required: false,
