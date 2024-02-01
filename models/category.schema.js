@@ -9,6 +9,12 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  createdAt: {
+    type: Date,
+  },
+  updatedAt: {
+    type: Date || null,
+  },
   description: {
     type: String,
     required: false,

@@ -4,9 +4,16 @@ const Product = require("../models/product.schema");
 // GET categories products ------------------------
 exports.getCategoryProducts = async (req, res) => {
   const { categoryId } = req.params;
+  const { page = 1, pagination = 10 } = req.query;
 
   try {
-    const category = await Category.findById(categoryId).populate("products");
+    const category = await Category.findById(categoryId).populate({
+      path: "products",
+      options: {
+        skip: (page - 1) * pagination,
+        limit: parseInt(pagination),
+      },
+    });
     if (!category) {
       return res.status(404).json({
         status: 404,
@@ -72,6 +79,8 @@ exports.createCategoryProduct = async (req, res) => {
       description,
       price,
       image: image ? process.env.BASE_URL + image.filename : "",
+      createdAt: new Date().toISOString(),
+      updatedAt: null,
     });
 
     // Save the product
@@ -107,13 +116,14 @@ exports.updateCategoryProduct = async (req, res) => {
           description,
           price,
           image: process.env.BASE_URL + image.filename,
+          updatedAt: new Date().toISOString(),
         },
         { new: true }
       );
     } else {
       product = await Product.findOneAndUpdate(
         { _id: productId },
-        { name, description, price },
+        { name, description, price, updatedAt: new Date().toISOString() },
         { new: true }
       );
     }
