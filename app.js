@@ -15,6 +15,7 @@ var authRouter = require("./routes/auth");
 var userRouter = require("./routes/user");
 var categoryRouter = require("./routes/category");
 var productRouter = require("./routes/product");
+var customerRouter = require("./routes/customer");
 var authenticateToken = require("./middlewares/authenticateToken");
 var { fileStorage, fileFilter } = require("./utils/functions");
 
@@ -50,6 +51,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ----------- routes -----------
 app.use("/auth", authRouter);
+app.use("/customer", customerRouter);
 
 app.use(authenticateToken); //is user authenticated
 app.use("/user", userRouter);
