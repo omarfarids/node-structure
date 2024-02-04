@@ -21,8 +21,10 @@ var { fileStorage, fileFilter } = require("./utils/functions");
 
 // ------------- app ------------
 const port = process.env.PORT || 8000;
+const host = process.env.HOST || "localhost";
+
 var app = express();
-app.listen(port, () => {
+app.listen(port, host, () => {
   console.log(`Server is running on port ${port}`);
 });
 
