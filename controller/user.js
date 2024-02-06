@@ -1,4 +1,5 @@
 const User = require("../models/user.schema");
+const bcrypt = require("bcryptjs");
 
 // Get all users ---------------------
 exports.getAllUsers = async (req, res) => {
@@ -15,6 +16,7 @@ exports.getAllUsers = async (req, res) => {
       data: users,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: 500,
       message: "Internal server error",
@@ -107,8 +109,9 @@ exports.editUser = async (req, res) => {
 
 // Edit user password ---------------------
 exports.editUserPassword = async (req, res) => {
-  const { id, password, confirmPassword } = req.body;
+  const { userId ,oldPassword, password, confirmPassword } = req.body;
 
+  console.log("something wrong");
   if (password !== confirmPassword) {
     return res.status(400).json({
       status: 400,
@@ -117,15 +120,7 @@ exports.editUserPassword = async (req, res) => {
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await User.findOneAndUpdate(
-      { _id: id },
-      {
-        password: hashedPassword,
-      },
-      { new: true }
-    );
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({
@@ -134,11 +129,34 @@ exports.editUserPassword = async (req, res) => {
       });
     }
 
+    // Compare the old password with the hashed password stored in the database
+    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isPasswordMatch) {
+      return res.status(400).json({
+        status: 400,
+        message: "Old password is incorrect",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.findOneAndUpdate(
+      { _id: userId },
+      {
+        password: hashedPassword,
+      },
+      { new: true }
+    );
+
+
+
     return res.status(200).json({
       status: 200,
       message: "Password updated successfully",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: 500,
       message: "Internal server error",
