@@ -1,6 +1,7 @@
 const User = require("../models/user.schema");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../utils/functions");
+const nodemailer = require("nodemailer");
 
 // -------------------- login --------------------
 exports.login = async (req, res) => {
@@ -88,6 +89,68 @@ exports.signup = async (req, res) => {
     return res.status(500).json({
       status: 500,
       message: "Something went wrong",
+    });
+  }
+};
+
+// POST reset password user ---------------------
+exports.resetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    const newPassword = Math.random().toString(36).slice(-8);
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await User.findOneAndUpdate(
+      { email: email },
+      {
+        password: hashedPassword,
+        updatedAt: new Date().toISOString(),
+      },
+      { new: true }
+    );
+    const transporter = nodemailer.createTransport({
+      host: process.env.HOST,
+      port: 587,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Password Reset",
+      text: `Your new password is: ${newPassword}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("Error sending email:", error);
+        return res.status(500).json({ message: "Failed to send email" });
+      } else {
+        console.log("Email sent:", info.response);
+        return res.status(200).json({ message: "Password reset successful" });
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      message: "Internal server error",
     });
   }
 };
