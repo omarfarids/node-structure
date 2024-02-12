@@ -66,7 +66,7 @@ exports.editUser = async (req, res) => {
         { _id: id },
         {
           username,
-          email,
+          email: email.toLowerCase(),
           image: process.env.BASE_URL + image.filename,
           updatedAt: new Date().toISOString(),
         },
@@ -75,7 +75,11 @@ exports.editUser = async (req, res) => {
     } else {
       user = await User.findOneAndUpdate(
         { _id: id },
-        { username, email, updatedAt: new Date().toISOString() },
+        {
+          username,
+          email: email.toLowerCase(),
+          updatedAt: new Date().toISOString(),
+        },
         { new: true }
       );
     }
@@ -160,6 +164,49 @@ exports.deleteUser = async (req, res) => {
     return res.status(200).json({
       status: 200,
       message: "User deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      message: "Internal server error",
+    });
+  }
+};
+
+// POST subscrition user ---------------------
+exports.subscription = async (req, res) => {
+  const { userId, isActive, expiration } = req.body;
+
+  try {
+    // Validate input data
+    if (!userId || (isActive && !expiration)) {
+      return res.status(400).json({
+        status: 400,
+        message: "Invalid request. userId and expiration are required.",
+      });
+    }
+
+    let update = {
+      isActive: isActive === true,
+      expiration: isActive === true ? expiration : 0,
+      subscriptionDate: isActive === true ? new Date().toISOString() : null,
+    };
+
+    const user = await User.findByIdAndUpdate({ _id: userId }, update);
+
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message:
+        isActive === true
+          ? "User activated successfully"
+          : "User deactivated successfully",
     });
   } catch (error) {
     return res.status(500).json({

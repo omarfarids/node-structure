@@ -17,4 +17,7 @@ router.put("/:id/update-password", userController.editUserPassword);
 /* DELETE delete user. */
 router.delete("/:id", userController.deleteUser);
 
+/* POST subscrition user. */
+router.post("/user-activation", userController.subscription);
+
 module.exports = router;
