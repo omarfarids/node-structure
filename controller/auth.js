@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
     message: "Logged in successfully",
     data: {
       username: user.username,
-      email: user.email,
+      email: user.email.toLowerCase(),
       id: user._id,
       role: user.isAdmin ? "admin" : "user",
       image: user.image,
@@ -42,7 +42,7 @@ exports.login = async (req, res) => {
 
 // -------------------- signup --------------------
 exports.signup = async (req, res) => {
-  const { email, username, password, confirmPassword } = req.body;
+  const { email, username, password, confirmPassword, phone } = req.body;
   const image = req.file;
 
   // Checking if the passwords match
@@ -55,7 +55,7 @@ exports.signup = async (req, res) => {
 
   try {
     // Checking if the email already exists
-    const isUserExists = await User.findOne({ email: email });
+    const isUserExists = await User.findOne({ email: email.toLowerCase() });
     if (isUserExists) {
       return res.status(400).json({
         status: 400,
@@ -67,11 +67,13 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      email,
+      email: email.toLowerCase(),
       username,
+      phone,
       password: hashedPassword,
       createdAt: new Date().toISOString(),
       updatedAt: null,
+      subscriptionDate: null,
       image: image ? process.env.BASE_URL + image.filename : "",
     });
 

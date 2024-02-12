@@ -15,7 +15,21 @@ const userSchema = new mongoose.Schema({
   },
   isAdmin: {
     type: Boolean,
+  },
+  isActive: {
+    type: Boolean,
     default: false,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  expiration: {
+    type: Number,
+    default: 0,
+  },
+  subscriptionDate: {
+    type: Date || null,
   },
   createdAt: {
     type: Date,
