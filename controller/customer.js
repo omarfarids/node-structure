@@ -25,6 +25,12 @@ exports.getUserCategory = async (req, res) => {
     return res.status(200).json({
       message: "User categories found successfully",
       data: user.categories,
+      user: {
+        username: user.username,
+        email: user.email,
+        id: user._id,
+        phone: user.phone,
+      },
     });
   } catch (error) {
     return res.status(500).json({
