@@ -2,6 +2,7 @@ const User = require("../models/user.schema");
 const bcrypt = require("bcryptjs");
 const { passwordRegex } = require("../constants/index");
 
+
 // Get all users ---------------------
 exports.getAllUsers = async (req, res) => {
   try {
@@ -16,6 +17,7 @@ exports.getAllUsers = async (req, res) => {
       data: users,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: 500,
       message: "Internal server error",
@@ -166,6 +168,27 @@ exports.editUserPassword = async (req, res) => {
         message: "User not found",
       });
     }
+
+    // Compare the old password with the hashed password stored in the database
+    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isPasswordMatch) {
+      return res.status(400).json({
+        status: 400,
+        message: "Old password is incorrect",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.findOneAndUpdate(
+      { _id: userId },
+      {
+        password: hashedPassword,
+      },
+      { new: true }
+    );
+
 
     // Compare the old password with the hashed password stored in the database
     const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);

@@ -2,6 +2,7 @@ const User = require("../models/user.schema");
 const bcrypt = require("bcryptjs");
 const { generateToken, randomPasswordSchema } = require("../utils/functions");
 const { passwordRegex } = require("../constants/index");
+
 const nodemailer = require("nodemailer");
 
 // -------------------- login --------------------
@@ -130,6 +131,7 @@ exports.resetPassword = async (req, res) => {
 
     const newPassword = randomPasswordSchema();
 
+
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     await User.findOneAndUpdate(
@@ -169,7 +171,6 @@ exports.resetPassword = async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       status: 500,
       message: "Internal server error",
