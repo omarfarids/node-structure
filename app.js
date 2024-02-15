@@ -52,6 +52,8 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 
 // ----------- routes -----------
+app.get("/",  (req, res) => res.send("Hello World!"));   //test route
+
 app.use("/auth", authRouter);
 app.use("/customer", customerRouter);
 
