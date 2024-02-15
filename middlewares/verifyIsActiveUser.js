@@ -4,7 +4,7 @@ const verifyIsActiveUser = async (req, res, next) => {
   const { userId } = req.query;
 
   try {
-    let user = await User.findById(userId);
+    let user = await User.findOne({ username: userId });
 
     if (!user) {
       return res.status(404).json({
