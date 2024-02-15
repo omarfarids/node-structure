@@ -9,7 +9,7 @@ const router = express.Router();
 router.use(verifyIsActiveUser);
 
 /* GET user categories. */
-router.get("/category/:userId", customerController.getUserCategory);
+router.get("/category/:username", customerController.getUserCategory);
 
 /* GET category products. */
 router.get("/product/:categoryId", customerController.getCategoryProducts);

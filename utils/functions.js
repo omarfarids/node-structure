@@ -34,4 +34,32 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-module.exports = { generateToken, fileStorage, fileFilter };
+// ----------- random password generator ------------
+const randomPasswordSchema = () => {
+  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowercase = "abcdefghijklmnopqrstuvwxyz";
+  const numbers = "0123456789";
+  const symbols = '!@#$%^&*()_+{}|:"<>?~`';
+
+  // Combine random characters
+  const allCharacters = [uppercase, lowercase, numbers, symbols];
+
+  // Combine random characters
+  let randomPassword = "";
+
+  allCharacters.forEach((type) => {
+    let randomIndex = Math.floor(Math.random() * type.length);
+    randomPassword += type[randomIndex];
+    randomIndex = Math.floor(Math.random() * type.length);
+    randomPassword += type[randomIndex];
+  });
+
+  return randomPassword;
+};
+
+module.exports = {
+  generateToken,
+  fileStorage,
+  fileFilter,
+  randomPasswordSchema,
+};

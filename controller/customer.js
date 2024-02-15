@@ -4,11 +4,11 @@ const Product = require("../models/product.schema");
 
 // GET user categories ------------------------
 exports.getUserCategory = async (req, res) => {
-  const { userId } = req.params;
+  const { username } = req.params;
   const { page = 1, pagination = 10 } = req.query;
 
   try {
-    const user = await User.findById(userId).populate({
+    const user = await User.findOne({ username: username }).populate({
       path: "categories",
       options: {
         skip: (page - 1) * pagination,
@@ -25,6 +25,13 @@ exports.getUserCategory = async (req, res) => {
     return res.status(200).json({
       message: "User categories found successfully",
       data: user.categories,
+      user: {
+        username: user.username,
+        email: user.email,
+        id: user._id,
+        phone: user.phone,
+        image: user.image,
+      },
     });
   } catch (error) {
     return res.status(500).json({

@@ -1,6 +1,8 @@
 const User = require("../models/user.schema");
 const bcrypt = require("bcryptjs");
-const { generateToken } = require("../utils/functions");
+const { generateToken, randomPasswordSchema } = require("../utils/functions");
+const { passwordRegex } = require("../constants/index");
+
 const nodemailer = require("nodemailer");
 
 // -------------------- login --------------------
@@ -46,6 +48,8 @@ exports.signup = async (req, res) => {
   const { email, username, password, confirmPassword, phone } = req.body;
   const image = req.file;
 
+  const unifiedUsername = username.toLowerCase().trim().split(" ").join("-");
+
   // Checking if the passwords match
   if (password !== confirmPassword) {
     return res.status(400).json({
@@ -54,14 +58,32 @@ exports.signup = async (req, res) => {
     });
   }
 
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      status: 400,
+      message:
+        "Password should:be at least 8 characters, contain one uppercase letter,contain one lowercase letter,contain one number and one special character",
+    });
+  }
+
   try {
     // Checking if the email already exists
-    const isUserExists = await User.findOne({ email: email.toLowerCase() });
-    if (isUserExists) {
-      return res.status(400).json({
-        status: 400,
-        message: "Email already exists",
-      });
+    const existingUser = await User.findOne({
+      $or: [{ email: email.toLowerCase() }, { username: unifiedUsername }],
+    });
+
+    if (existingUser) {
+      if (existingUser.email === email.toLowerCase()) {
+        return res.status(400).json({
+          status: 400,
+          message: "Email already exists",
+        });
+      } else {
+        return res.status(400).json({
+          status: 400,
+          message: "Username already exists",
+        });
+      }
     }
 
     // Creating a new user
@@ -69,7 +91,7 @@ exports.signup = async (req, res) => {
 
     const newUser = new User({
       email: email.toLowerCase(),
-      username,
+      username: unifiedUsername,
       phone,
       password: hashedPassword,
       createdAt: new Date().toISOString(),
@@ -107,7 +129,8 @@ exports.resetPassword = async (req, res) => {
       });
     }
 
-    const newPassword = Math.random().toString(36).slice(-8);
+    const newPassword = randomPasswordSchema();
+
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
