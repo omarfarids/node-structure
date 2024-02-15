@@ -6,7 +6,7 @@ const userController = require("../controller/user");
 router.get("/", userController.getAllUsers);
 
 /* GET a user. */
-router.get("/:id", userController.getUser);
+router.get("/:username", userController.getUser);
 
 /* PUT edit user. */
 router.put("/:id", userController.editUser);
