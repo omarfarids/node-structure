@@ -9,7 +9,7 @@ const nodemailer = require("nodemailer");
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ email: email.toLowerCase() });
 
   if (!user) {
     return res.status(400).json({
@@ -130,7 +130,6 @@ exports.resetPassword = async (req, res) => {
     }
 
     const newPassword = randomPasswordSchema();
-
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 

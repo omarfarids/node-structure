@@ -2,7 +2,6 @@ const User = require("../models/user.schema");
 const bcrypt = require("bcryptjs");
 const { passwordRegex } = require("../constants/index");
 
-
 // Get all users ---------------------
 exports.getAllUsers = async (req, res) => {
   try {
@@ -72,7 +71,12 @@ exports.editUser = async (req, res) => {
 
   try {
     const existingUser = await User.findOne({
-      $or: [{ email: email.toLowerCase() }, { username: unifiedUsername }],
+      $and: [
+        { _id: { $ne: id } }, // Exclude the current user by ID
+        {
+          $or: [{ email: email.toLowerCase() }, { username: unifiedUsername }],
+        },
+      ],
     });
 
     if (existingUser) {
@@ -168,27 +172,6 @@ exports.editUserPassword = async (req, res) => {
         message: "User not found",
       });
     }
-
-    // Compare the old password with the hashed password stored in the database
-    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
-
-    if (!isPasswordMatch) {
-      return res.status(400).json({
-        status: 400,
-        message: "Old password is incorrect",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await User.findOneAndUpdate(
-      { _id: userId },
-      {
-        password: hashedPassword,
-      },
-      { new: true }
-    );
-
 
     // Compare the old password with the hashed password stored in the database
     const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
