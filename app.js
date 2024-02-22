@@ -46,13 +46,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
-);
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).any());
 app.use(express.static(path.join(__dirname, "public")));
 
 // ----------- routes -----------
-app.get("/",  (req, res) => res.send("Hello World!"));   //test route
+app.get("/", (req, res) => res.send("Hello World!")); //test route
 
 app.use("/auth", authRouter);
 app.use("/customer", customerRouter);

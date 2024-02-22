@@ -31,6 +31,18 @@ const userSchema = new mongoose.Schema({
   subscriptionDate: {
     type: Date || null,
   },
+  headerImage: {
+    type: String,
+    required: false,
+  },
+  backgroundImage: {
+    type: String,
+    required: false,
+  },
+  themeColor: {
+    type: String,
+    required: false,
+  },
   createdAt: {
     type: Date,
   },

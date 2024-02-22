@@ -69,7 +69,7 @@ exports.getSingleCategory = async (req, res) => {
 // POST create user category ------------------------
 exports.createUserCategory = async (req, res) => {
   const { userId, name, description } = req.body;
-  const image = req.file;
+  const [image] = req.files;
 
   try {
     // Find the user by ID
@@ -111,7 +111,7 @@ exports.createUserCategory = async (req, res) => {
 // PUT update user category ------------------------
 exports.updateUserCategory = async (req, res) => {
   const { categoryId, name, description } = req.body;
-  const image = req.file;
+  const [image] = req.files;
 
   try {
     let category;

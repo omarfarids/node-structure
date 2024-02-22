@@ -61,7 +61,14 @@ exports.getSingleProduct = async (req, res) => {
 // POST create category product ------------------------
 exports.createCategoryProduct = async (req, res) => {
   const { categoryId, name, description, price } = req.body;
-  const image = req.file;
+  const [image] = req.files;
+
+  if (typeof price !== "number") {
+    return res.status(400).json({
+      status: 400,
+      message: "Price must be a number",
+    });
+  }
 
   try {
     // Find the category by ID
@@ -104,7 +111,14 @@ exports.createCategoryProduct = async (req, res) => {
 // PUT update category product. ------------------------
 exports.updateCategoryProduct = async (req, res) => {
   const { productId, name, description, price } = req.body;
-  const image = req.file;
+  const [image] = req.files;
+
+  if (typeof price !== "number") {
+    return res.status(400).json({
+      status: 400,
+      message: "Price must be a number",
+    });
+  }
 
   try {
     let product;
