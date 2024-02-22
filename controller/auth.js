@@ -46,7 +46,7 @@ exports.login = async (req, res) => {
 // -------------------- signup --------------------
 exports.signup = async (req, res) => {
   const { email, username, password, confirmPassword, phone } = req.body;
-  const image = req.file;
+  const [image] = req.files;
 
   const unifiedUsername = username.toLowerCase().trim().split(" ").join("-");
 

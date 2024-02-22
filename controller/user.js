@@ -64,8 +64,9 @@ exports.getUser = async (req, res) => {
 
 // Edit user ---------------------
 exports.editUser = async (req, res) => {
-  const { id, username, email, phone } = req.body;
-  const image = req.file;
+  const { id, username, email, phone, themeColor } = req.body;
+
+  const [image, headerImage, backgroundImage] = req.files;
 
   const unifiedUsername = username.toLowerCase().trim().split(" ").join("-");
 
@@ -101,7 +102,10 @@ exports.editUser = async (req, res) => {
           username: unifiedUsername,
           email: email.toLowerCase(),
           image: process.env.BASE_URL + image.filename,
+          headerImage: process.env.BASE_URL + headerImage.filename,
+          backgroundImage: process.env.BASE_URL + backgroundImage.filename,
           updatedAt: new Date().toISOString(),
+          themeColor,
           phone,
         },
         { new: true }
@@ -112,7 +116,10 @@ exports.editUser = async (req, res) => {
         {
           username: unifiedUsername,
           email: email.toLowerCase(),
+          headerImage: process.env.BASE_URL + headerImage.filename,
+          backgroundImage: process.env.BASE_URL + backgroundImage.filename,
           updatedAt: new Date().toISOString(),
+          themeColor,
           phone,
         },
         { new: true }
@@ -134,6 +141,9 @@ exports.editUser = async (req, res) => {
         username: user.username,
         email: user.email,
         image: user.image,
+        headerImage: user.headerImage,
+        backgroundImage: user.backgroundImage,
+        themeColor: user.themeColor,
       },
     });
   } catch (error) {
