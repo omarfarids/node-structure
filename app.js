@@ -13,9 +13,7 @@ const multer = require("multer");
 // ------------- internal exports ------------
 var authRouter = require("./routes/auth");
 var userRouter = require("./routes/user");
-var categoryRouter = require("./routes/category");
-var productRouter = require("./routes/product");
-var customerRouter = require("./routes/customer");
+var clientRouter = require("./routes/client");
 var authenticateToken = require("./middlewares/authenticateToken");
 var { fileStorage, fileFilter } = require("./utils/functions");
 
@@ -53,12 +51,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => res.send("Hello World!")); //test route
 
 app.use("/auth", authRouter);
-app.use("/customer", customerRouter);
+app.use("/client", clientRouter);
 
 app.use(authenticateToken); //is user authenticated
 app.use("/user", userRouter);
-app.use("/category", categoryRouter);
-app.use("/product", productRouter);
 
 // ------- catch 404 and forward to error handler ------
 app.use(function (req, res, next) {

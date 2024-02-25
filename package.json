@@ -3,9 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon app.js",
-    "build": "mkdir -p dist && rsync -av --exclude=dist --exclude=node_modules . dist/",
-    "prestart": "npm run build"
+    "start": "nodemon app.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.0",

@@ -1,4 +1,4 @@
-const customerController = require("../controller/customer");
+const customerController = require("../controller/client.controller");
 
 const express = require("express");
 

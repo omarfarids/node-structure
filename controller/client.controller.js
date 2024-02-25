@@ -31,9 +31,6 @@ exports.getUserCategory = async (req, res) => {
         id: user._id,
         phone: user.phone,
         image: user.image,
-        headerImage: user.headerImage,
-        backgroundImage: user.backgroundImage,
-        themeColor: user.themeColor,
       },
     });
   } catch (error) {
