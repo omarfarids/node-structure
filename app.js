@@ -44,7 +44,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).any());
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).fields([
+    {
+      name: "image",
+    },
+  ])
+);
 app.use(express.static(path.join(__dirname, "public")));
 
 // ----------- routes -----------

@@ -46,7 +46,7 @@ exports.login = async (req, res) => {
 // -------------------- signup --------------------
 exports.signup = async (req, res) => {
   const { email, username, password, confirmPassword, phone } = req.body;
-  const [image] = req.files;
+  const { image } = req.files;
 
   const unifiedUsername = username.toLowerCase().trim().split(" ").join("-");
 
@@ -97,7 +97,7 @@ exports.signup = async (req, res) => {
       createdAt: new Date().toISOString(),
       updatedAt: null,
       subscriptionDate: null,
-      image: image ? process.env.BASE_URL + image.filename : "",
+      image: image ? process.env.BASE_URL + image[0].filename : "",
     });
 
     // Saving the user

@@ -66,7 +66,7 @@ exports.getUser = async (req, res) => {
 exports.editUser = async (req, res) => {
   const { id, username, email, phone } = req.body;
 
-  const [image] = req.files;
+  const { image } = req.files;
 
   const unifiedUsername = username.toLowerCase().trim().split(" ").join("-");
 
@@ -95,30 +95,21 @@ exports.editUser = async (req, res) => {
     }
 
     let user;
-    if (image && image.filename) {
-      user = await User.findOneAndUpdate(
-        { _id: id },
-        {
-          username: unifiedUsername,
-          email: email.toLowerCase(),
-          image: process.env.BASE_URL + image.filename,
-          updatedAt: new Date().toISOString(),
-          phone,
-        },
-        { new: true }
-      );
-    } else {
-      user = await User.findOneAndUpdate(
-        { _id: id },
-        {
-          username: unifiedUsername,
-          email: email.toLowerCase(),
-          updatedAt: new Date().toISOString(),
-          phone,
-        },
-        { new: true }
-      );
+
+    const updatedValues = {
+      username: unifiedUsername,
+      email: email.toLowerCase(),
+      updatedAt: new Date().toISOString(),
+      phone,
+    };
+
+    if (image && image.length) {
+      updatedValues.image = process.env.BASE_URL + image[0].filename;
     }
+
+    user = await User.findOneAndUpdate({ _id: id }, updatedValues, {
+      new: true,
+    });
 
     if (!user) {
       return res.status(404).json({
